@@ -1,5 +1,5 @@
 [package]
-name = "pgsql-parser"
+name = "toy-pgmodeler-export-to-tsv-rs"
 version = "0.1.0"
 authors = ["Kobayasi, Hiroaki <buribullet@gmail.com>"]
 edition = "2018"
