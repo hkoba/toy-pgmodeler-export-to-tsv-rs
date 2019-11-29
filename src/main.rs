@@ -21,25 +21,21 @@ fn main() -> std::io::Result<()> {
         
         for ddl in sql.split("\n-- ddl-end --\n") {
             match Parser::parse_sql(&dialect, ddl.to_string()) {
-                Ok(ast) => {
-                    if ast.len() < 1 {
-                    }
-                    else {
-                        let ast0 = &ast[0];
-                        if let Statement::CreateTable {name, columns, ..} = &ast0 {
-                            let nv = &name.0;
-                            println!("{}", nv[nv.len() - 1]);
-                            for col in columns {
-                                println!("{}\t{}", col.name, col.data_type);
-                            }
-                            println!("");
-                        } else {
-                            // println!("====\n{}\n====", ddl);
-                            // println!("Unsupported AST: {:?}", ast)
+                Ok(ast) if ast.len() >= 1 => {
+                    let ast0 = &ast[0];
+                    if let Statement::CreateTable {name, columns, ..} = &ast0 {
+                        let nv = &name.0;
+                        println!("{}", nv[nv.len() - 1]);
+                        for col in columns {
+                            println!("{}\t{}", col.name, col.data_type);
                         }
+                        println!("");
+                    } else {
+                        // println!("====\n{}\n====", ddl);
+                        // println!("Unsupported AST: {:?}", ast)
                     }
                 },
-                Err(_) => (),
+                _ => ()
             }
         }
     }
