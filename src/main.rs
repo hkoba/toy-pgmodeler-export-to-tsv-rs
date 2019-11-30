@@ -31,17 +31,26 @@ fn main() -> std::io::Result<()> {
                 // 長さ 0 のものが返るケースも有った
                 Ok(ast) if ast.len() >= 1 => {
                     let ast0 = &ast[0];
-                    // 興味のない所は .. で省略
-                    if let Statement::CreateTable {name, columns, ..} = &ast0 {
-                        let nv = &name.0;
-                        println!("{}", nv[nv.len() - 1]);
-                        for col in columns {
-                            println!("{}\t{}", col.name, col.data_type);
+
+                    // 
+                    if let ct @ &Statement::CreateTable {..} = ast0 {
+                        // ok.
+                        println!("ct = {:?}", ct);
+
+                        // Also ok.
+                        if let Statement::CreateTable {name,..} = ct {
+                            println!("ct.name = {:?}", name);
                         }
-                        println!("");
-                    } else {
-                        // println!("====\n{}\n====", ddl);
-                        // println!("Unsupported AST: {:?}", ast)
+
+                        // NG. Why?
+                        // println!("ct.name = {:?}", ct.name);
+                        //
+                        // error[E0609]: no field `name` on type `&sqlparser::ast::Statement`
+                        //   --> src/main.rs:46:55
+                        //    |
+                        // 46 |  println!("ct.name = {:?}", ct.name);
+                        //    |                                ^^^^
+                        // error: aborting due to previous error
                     }
                 },
                 _ => ()
